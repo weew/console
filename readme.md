@@ -29,6 +29,8 @@
 
 This package provides a convenient skeleton for console application. Optically, heavily inspired by the symfony console it has it similarities and differences. Describing commands, parsing console arguments, styling and colorization of output, question helpers etc., all this is included inside this package. In [related projects](#related-projects) you'll find a list of used components that you might also use separately from this package.
 
+Note: this package has not been tested on windows. Windows contributions are highly appreciated.
+
 ## Console
 
 To start building your console app, you need to instantiated a new console first.
