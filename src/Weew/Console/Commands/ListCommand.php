@@ -33,9 +33,6 @@ class ListCommand {
         $command
             ->setName('list')
             ->setDescription('List all available commands');
-
-        $command->argument(ArgumentType::SINGLE_OPTIONAL, 'data')
-            ->setDescription('some data');
     }
 
     /**

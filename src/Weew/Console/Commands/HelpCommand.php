@@ -51,16 +51,6 @@ EOT
 
         $command->argument(ArgumentType::SINGLE_OPTIONAL, 'command')
             ->setDescription('Command to show help for');
-
-        $command->argument(ArgumentType::MULTIPLE_OPTIONAL, 'arg2')
-            ->setDescription('Another arg')
-            ->setDefaultValue('default');
-
-        $command->option(OptionType::SINGLE_OPTIONAL, '--name', '-n')
-            ->setDescription('give me your name');
-
-        $command->option(OptionType::MULTIPLE_OPTIONAL, '--keys', '-k')
-            ->setDescription('list of keys');
     }
 
     /**
