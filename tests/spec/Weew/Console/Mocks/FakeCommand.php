@@ -2,11 +2,12 @@
 
 namespace tests\spec\Weew\Console\Mocks;
 
+use Weew\Console\IConsole;
 use Weew\Console\IInput;
 use Weew\Console\IOutput;
 use Weew\ConsoleArguments\ICommand;
 
 class FakeCommand {
     public function setup(ICommand $command) {}
-    public function run(IInput $input, IOutput $output) {}
+    public function run(IInput $input, IOutput $output, IConsole $console) {}
 }

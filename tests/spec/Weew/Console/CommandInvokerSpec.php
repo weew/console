@@ -7,6 +7,7 @@ use Prophecy\Argument;
 use stdClass;
 use tests\spec\Weew\Console\Mocks\FakeCommand;
 use Weew\Console\CommandInvoker;
+use Weew\Console\Console;
 use Weew\Console\Input;
 use Weew\Console\Output;
 use Weew\ConsoleArguments\Command;
@@ -33,9 +34,10 @@ class CommandInvokerSpec extends ObjectBehavior {
     function it_runs_handler(FakeCommand $fakeCommand) {
         $input = new Input();
         $output = new Output();
+        $console = new Console();
 
-        $fakeCommand->run($input, $output)->shouldBeCalled();
+        $fakeCommand->run($input, $output, $console)->shouldBeCalled();
 
-        $this->run($fakeCommand, $input, $output);
+        $this->run($fakeCommand, $input, $output, $console);
     }
 }

@@ -362,7 +362,8 @@ class Console implements IConsole {
             $this->commandInvoker->run(
                 $command->getHandler(),
                 $input,
-                $this->output
+                $this->output,
+                $this
             );
         } catch (Exception $ex) {
             $widget = new ExceptionWidget($this->input, $this->output);

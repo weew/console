@@ -26,8 +26,9 @@ class CommandInvoker implements ICommandInvoker {
      * @param object $handler
      * @param IInput $input
      * @param IOutput $output
+     * @param IConsole $console
      */
-    public function run($handler, IInput $input, IOutput $output) {
-        $handler->run($input, $output);
+    public function run($handler, IInput $input, IOutput $output, IConsole $console) {
+        $handler->run($input, $output, $console);
     }
 }

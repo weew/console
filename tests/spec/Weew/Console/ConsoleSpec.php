@@ -14,6 +14,7 @@ use Weew\Console\Commands\VersionCommand;
 use Weew\Console\Console;
 use Weew\Console\Exceptions\InvalidCommandException;
 use Weew\Console\ICommandInvoker;
+use Weew\Console\IConsole;
 use Weew\Console\IInput;
 use Weew\Console\Input;
 use Weew\Console\IOutput;
@@ -171,7 +172,8 @@ class ConsoleSpec extends ObjectBehavior {
         $invoker->run(
             Argument::type(HelpCommand::class),
             Argument::type(IInput::class),
-            Argument::type(IOutput::class)
+            Argument::type(IOutput::class),
+            Argument::type(IConsole::class)
         )->shouldBeCalled();
 
         $this->parseString('help');
@@ -183,7 +185,8 @@ class ConsoleSpec extends ObjectBehavior {
         $invoker->run(
             Argument::type(ListCommand::class),
             Argument::type(IInput::class),
-            Argument::type(IOutput::class)
+            Argument::type(IOutput::class),
+            Argument::type(IConsole::class)
         )->shouldBeCalled();
 
         $this->parseString('list');
@@ -195,7 +198,8 @@ class ConsoleSpec extends ObjectBehavior {
         $invoker->run(
             Argument::type(ListCommand::class),
             Argument::type(IInput::class),
-            Argument::type(IOutput::class)
+            Argument::type(IOutput::class),
+            Argument::type(IConsole::class)
         )->shouldBeCalled();
 
         $this->parseString('');
@@ -207,7 +211,8 @@ class ConsoleSpec extends ObjectBehavior {
         $invoker->run(
             Argument::type(HelpCommand::class),
             Argument::type(IInput::class),
-            Argument::type(IOutput::class)
+            Argument::type(IOutput::class),
+            Argument::type(IConsole::class)
         )->shouldBeCalled();
 
         $this->parseString('help list');
@@ -219,7 +224,8 @@ class ConsoleSpec extends ObjectBehavior {
         $invoker->run(
             Argument::type(HelpCommand::class),
             Argument::type(IInput::class),
-            Argument::type(IOutput::class)
+            Argument::type(IOutput::class),
+            Argument::type(IConsole::class)
         )->shouldBeCalled();
 
         $this->parseString('list --help');
@@ -231,7 +237,8 @@ class ConsoleSpec extends ObjectBehavior {
         $invoker->run(
             Argument::type(HelpCommand::class),
             Argument::type(IInput::class),
-            Argument::type(IOutput::class)
+            Argument::type(IOutput::class),
+            Argument::type(IConsole::class)
         )->shouldBeCalled();
 
         $this->parseString('--help');
@@ -243,7 +250,8 @@ class ConsoleSpec extends ObjectBehavior {
         $invoker->run(
             Argument::type(VersionCommand::class),
             Argument::type(IInput::class),
-            Argument::type(IOutput::class)
+            Argument::type(IOutput::class),
+            Argument::type(IConsole::class)
         )->shouldBeCalled();
 
         $this->parseString('-V');

@@ -22,6 +22,7 @@ interface ICommandInvoker {
      * @param object $handler
      * @param IInput $input
      * @param IOutput $output
+     * @param IConsole $console
      */
-    function run($handler, IInput $input, IOutput $output);
+    function run($handler, IInput $input, IOutput $output, IConsole $console);
 }
