@@ -1,0 +1,33 @@
+{
+    "name": "weew/php-console",
+    "description": "Console application skeleton.",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Maxim Kott",
+            "email": "maximkott@gmail.com"
+        }
+    ],
+    "autoload": {
+        "psr-4": {
+            "": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "tests\\": "tests/"
+        }
+    },
+    "require": {
+        "weew/php-console-arguments": "^1.0",
+        "weew/php-console-formatter": "^2.1",
+        "weew/php-helpers-array": "^1.2",
+        "weew/php-helpers-string": "^1.7"
+    },
+    "require-dev": {
+        "satooshi/php-coveralls": "^0.6.1",
+        "phpspec/phpspec": "^2.4",
+        "weew/php-helpers-phpspec": "^1.0",
+        "henrikbjorn/phpspec-code-coverage": "^2.0"
+    }
+}
