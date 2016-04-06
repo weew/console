@@ -25,7 +25,7 @@
 
 ## Introduction
 
-![Screenshot](screenshot.jpg?raw=true)
+![Screenshot](screenshot.png?raw=true)
 
 This package provides a convenient skeleton for console application. Optically, heavily inspired by the symfony console it has it similarities and differences. Describing commands, parsing console arguments, styling and colorization of output, question helpers etc., all this is included inside this package. In [related projects](#related-projects) you'll find a list of used components that you might also use separately from this package.
 
