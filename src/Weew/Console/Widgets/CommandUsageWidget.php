@@ -33,8 +33,6 @@ class CommandUsageWidget {
      */
     public function render(ICommand $command) {
         $name = $command->getName();
-        $arguments = $command->getArguments();
-        $options = $command->getOptions();
 
         $usage = "$name ";
 
@@ -54,6 +52,11 @@ class CommandUsageWidget {
         $this->output->writeLineIndented("$usage");
     }
 
+    /**
+     * @param array $arguments
+     *
+     * @return string
+     */
     protected function getArgumentsUsage(array $arguments) {
         $usage = '';
 
@@ -81,6 +84,11 @@ class CommandUsageWidget {
         return $usage;
     }
 
+    /**
+     * @param array $options
+     *
+     * @return string
+     */
     private function getOptionsUsage(array $options) {
         $usage = '';
 
