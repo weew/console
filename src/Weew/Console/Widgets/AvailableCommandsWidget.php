@@ -34,7 +34,6 @@ class AvailableCommandsWidget {
      */
     public function render(IConsole $console) {
         $facts = $this->gatherFacts($console->getCommands());
-        ksort($facts);
 
         if (count($facts) > 0) {
             $table = new TableWidget($this->input, $this->output);
@@ -75,6 +74,21 @@ class AvailableCommandsWidget {
                 $facts[$command->getName()] = $command->getDescription();
             }
         }
+
+        ksort($facts);
+
+        $ungroupedFacts = [];
+        $groupedFacts = [];
+
+        foreach ($facts as $name => $description) {
+            if (stripos($name, ':') === false) {
+                $ungroupedFacts[$name] = $description;
+            } else {
+                $groupedFacts[$name] = $description;
+            }
+        }
+
+        $facts = array_merge($ungroupedFacts, $groupedFacts);
 
         return $facts;
     }
