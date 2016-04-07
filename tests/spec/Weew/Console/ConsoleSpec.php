@@ -282,7 +282,7 @@ class ConsoleSpec extends ObjectBehavior {
         $this->parseString('-f plain');
         $this->getOutput()->getOutputFormat()->shouldBe(OutputFormat::PLAIN);
         $this->parseString('');
-        $this->getOutput()->getOutputFormat()->shouldBe(OutputFormat::NORMAL);
+        $this->getOutput()->getOutputFormat()->shouldBe(OutputFormat::PLAIN);
     }
 
     function it_handles_command_errors() {

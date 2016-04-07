@@ -447,9 +447,11 @@ class Console implements IConsole {
         $option = new Option(OptionType::INCREMENTAL, '--verbosity', '-v');
         $this->argumentsMatcher->matchOption($option, $args);
 
-        $this->output->setOutputVerbosity(
-            OutputVerbosity::getVerbosityForLevel($option->getValue())
-        );
+        if ($option->hasValue()) {
+            $this->output->setOutputVerbosity(
+                OutputVerbosity::getVerbosityForLevel($option->getValue())
+            );
+        }
     }
 
     /**
@@ -464,8 +466,6 @@ class Console implements IConsole {
             $this->output->setOutputFormat(OutputFormat::PLAIN);
         } else if ($option->getValue() === 'raw') {
             $this->output->setOutputFormat(OutputFormat::RAW);
-        } else {
-            $this->output->setOutputFormat(OutputFormat::NORMAL);
         }
     }
 
