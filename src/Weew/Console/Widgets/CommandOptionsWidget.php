@@ -47,10 +47,12 @@ class CommandOptionsWidget {
             $description = $option->getDescription();
 
             if ($alias === null) {
-                $alias = '    ';
+                $alias = '';
+            } else {
+                $alias .= ', ';
             }
 
-            $table->addRow("<keyword>$alias, $name</keyword>", $description);
+            $table->addRow("<keyword>$alias$name</keyword>", $description);
         }
 
         $table->render();
