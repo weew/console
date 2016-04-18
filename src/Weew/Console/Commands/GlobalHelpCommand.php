@@ -30,7 +30,7 @@ class GlobalHelpCommand {
     public function run(IInput $input, IOutput $output, IConsole $console) {
         if ($input->hasOption('--help')) {
             $args = $input->getArgument('args');
-            $subject = array_pop($args);
+            $subject = array_shift($args);
 
             $console->parseString("help $subject");
 

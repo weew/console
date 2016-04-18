@@ -5,7 +5,6 @@ namespace Weew\Console\Commands;
 use Weew\Console\IInput;
 use Weew\Console\InputVerbosity;
 use Weew\Console\IOutput;
-use Weew\ConsoleArguments\ArgumentType;
 use Weew\ConsoleArguments\ICommand;
 use Weew\ConsoleArguments\OptionType;
 
@@ -15,7 +14,6 @@ class GlobalNoInteractionCommand {
      */
     public function setup(ICommand $command) {
         $command->setGlobal(true)->setHidden(true);
-        $command->argument(ArgumentType::MULTIPLE_OPTIONAL, 'args');
         $command->option(OptionType::BOOLEAN, '--no-interaction', '-n')
             ->setDescription('Disable interactions like questions, prompts, etc');
     }

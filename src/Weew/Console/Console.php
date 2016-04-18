@@ -302,12 +302,16 @@ class Console implements IConsole {
      * @param array $args
      */
     protected function handleArgs(array $args) {
-        if ($this->runGlobalCommands($args) === false) {
+        $groupedArgs = $this->argumentsParser->group($args);
+        list($groupedArgs, $continue) = $this->runGlobalCommands($groupedArgs);
+
+        if ($continue === false) {
             return;
         }
 
         try {
-            $command = $this->argumentsMatcher->matchCommands($this->commands, $args);
+            list($command, $groupedArgs) = $this->argumentsMatcher
+                ->matchCommands($this->commands, $groupedArgs);
             $command = clone $command;
             $this->runCommand($command);
         } catch (MissingCommandNameException $ex) {
@@ -347,18 +351,18 @@ class Console implements IConsole {
     }
 
     /**
-     * @param array $args
+     * @param array $groupedArgs
      *
      * @return bool
      */
-    protected function runGlobalCommands(array $args) {
+    protected function runGlobalCommands(array $groupedArgs) {
         foreach ($this->getCommands() as $command) {
             $command = clone $command;
 
             // run commands that are global but will for sure
             // not generate any output or interrupt the flow
             if ($command->isGlobal() && $command->isHidden()) {
-                $this->argumentsMatcher->matchCommand($command, $args);
+                $groupedArgs = $this->argumentsMatcher->matchCommand($command, $groupedArgs, false);
                 $this->runCommand($command, false);
             }
         }
@@ -369,14 +373,20 @@ class Console implements IConsole {
             // run commands that might generate output or
             // try to interrupt the flow
             if ($command->isGlobal() && ! $command->isHidden()) {
-                $this->argumentsMatcher->matchCommand($command, $args);
+                // dirty hack, fix later
+                // global commands should not steal arguments
+                $args = $groupedArgs['arguments'];
+                $groupedArgs = $this->argumentsMatcher->matchCommand($command, $groupedArgs, false);
+                $groupedArgs['arguments'] = $args;
                 $continue = $this->runCommand($command);
 
                 if ($continue === false) {
-                    return false;
+                    return [$groupedArgs, false];
                 }
             }
         }
+
+        return [$groupedArgs, true];
     }
 
     /**

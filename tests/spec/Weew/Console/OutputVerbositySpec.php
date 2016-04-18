@@ -15,10 +15,10 @@ class OutputVerbositySpec extends ObjectBehavior {
     }
 
     function it_returns_verbosity_for_levels() {
-        $this->getVerbosityForLevel(-1)->shouldBe(OutputVerbosity::SILENT);
         $this->getVerbosityForLevel(0)->shouldBe(OutputVerbosity::NORMAL);
         $this->getVerbosityForLevel(1)->shouldBe(OutputVerbosity::VERBOSE);
         $this->getVerbosityForLevel(2)->shouldBe(OutputVerbosity::DEBUG);
+        $this->getVerbosityForLevel(3)->shouldBe(OutputVerbosity::SILENT);
         $this->getVerbosityForLevel(99)->shouldBe(OutputVerbosity::DEBUG);
     }
 

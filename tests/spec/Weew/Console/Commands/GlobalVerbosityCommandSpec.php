@@ -32,7 +32,7 @@ class GlobalVerbosityCommandSpec extends ObjectBehavior {
 
     function it_detects_verbosity(IInput $input, IOutput $output) {
         $input->hasOption('--verbosity')->willReturn(true);
-        $input->getOption('--verbosity', 0)->willReturn(3);
+        $input->getOption('--verbosity', 0)->willReturn(2);
         $output->setOutputVerbosity(OutputVerbosity::DEBUG)->shouldBeCalled();
         $this->run($input, $output);
     }

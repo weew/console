@@ -5,7 +5,6 @@ namespace Weew\Console\Commands;
 use Weew\Console\IConsole;
 use Weew\Console\IInput;
 use Weew\Console\IOutput;
-use Weew\ConsoleArguments\ArgumentType;
 use Weew\ConsoleArguments\ICommand;
 use Weew\ConsoleArguments\OptionType;
 
@@ -15,7 +14,6 @@ class GlobalVersionCommand {
      */
     public function setup(ICommand $command) {
         $command->setGlobal(true);
-        $command->argument(ArgumentType::MULTIPLE_OPTIONAL, 'args');
         $command->option(OptionType::BOOLEAN, '--version', '-V')
             ->setDescription('Show application version');
     }

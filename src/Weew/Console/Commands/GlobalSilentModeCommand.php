@@ -6,7 +6,6 @@ use Weew\Console\IInput;
 use Weew\Console\InputVerbosity;
 use Weew\Console\IOutput;
 use Weew\Console\OutputVerbosity;
-use Weew\ConsoleArguments\ArgumentType;
 use Weew\ConsoleArguments\ICommand;
 use Weew\ConsoleArguments\OptionType;
 
@@ -16,7 +15,6 @@ class GlobalSilentModeCommand {
      */
     public function setup(ICommand $command) {
         $command->setGlobal(true)->setHidden(true);
-        $command->argument(ArgumentType::MULTIPLE_OPTIONAL, 'args');
         $command->option(OptionType::BOOLEAN, '--silent', '-s')
             ->setDescription('Disable input and output');
     }

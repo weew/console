@@ -33,16 +33,16 @@ class OutputVerbosity {
      * @return int
      */
     public static function getVerbosityForLevel($level) {
-        if ($level < 0) {
-            return self::SILENT;
-        }
-
         if ($level === 0) {
             return self::NORMAL;
         }
 
         if ($level === 1) {
             return self::VERBOSE;
+        }
+
+        if ($level === 3) {
+            return self::SILENT;
         }
 
         return self::DEBUG;

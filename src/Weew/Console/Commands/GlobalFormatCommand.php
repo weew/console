@@ -5,7 +5,6 @@ namespace Weew\Console\Commands;
 use Weew\Console\IInput;
 use Weew\Console\IOutput;
 use Weew\Console\OutputFormat;
-use Weew\ConsoleArguments\ArgumentType;
 use Weew\ConsoleArguments\ICommand;
 use Weew\ConsoleArguments\OptionType;
 
@@ -15,7 +14,6 @@ class GlobalFormatCommand {
      */
     public function setup(ICommand $command) {
         $command->setGlobal(true)->setHidden(true);
-        $command->argument(ArgumentType::MULTIPLE_OPTIONAL, 'args');
         $command->option(OptionType::SINGLE_OPTIONAL, '--format', '-f')
             ->setDescription('Output format: normal, plain, raw');
     }
