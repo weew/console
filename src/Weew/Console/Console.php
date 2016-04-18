@@ -311,7 +311,7 @@ class Console implements IConsole {
 
         try {
             list($command, $groupedArgs) = $this->argumentsMatcher
-                ->matchCommands($this->commands, $groupedArgs);
+                ->matchCommands($this->getNotGlobalCommands(), $groupedArgs);
             $command = clone $command;
             $this->runCommand($command);
         } catch (MissingCommandNameException $ex) {
@@ -356,33 +356,28 @@ class Console implements IConsole {
      * @return bool
      */
     protected function runGlobalCommands(array $groupedArgs) {
-        foreach ($this->getCommands() as $command) {
+        // run commands that are global but will for sure
+        // not generate any output or interrupt the flow
+        foreach ($this->getGlobalHiddenCommands() as $command) {
             $command = clone $command;
-
-            // run commands that are global but will for sure
-            // not generate any output or interrupt the flow
-            if ($command->isGlobal() && $command->isHidden()) {
-                $groupedArgs = $this->argumentsMatcher->matchCommand($command, $groupedArgs, false);
-                $this->runCommand($command, false);
-            }
+            $groupedArgs = $this->argumentsMatcher->matchCommand($command, $groupedArgs, false);
+            $this->runCommand($command, false);
         }
 
-        foreach ($this->getCommands() as $command) {
+        // run commands that might generate output or
+        // try to interrupt the flow
+        foreach ($this->getGlobalNotHiddenCommands() as $command) {
             $command = clone $command;
 
-            // run commands that might generate output or
-            // try to interrupt the flow
-            if ($command->isGlobal() && ! $command->isHidden()) {
-                // dirty hack, fix later
-                // global commands should not steal arguments
-                $args = $groupedArgs['arguments'];
-                $groupedArgs = $this->argumentsMatcher->matchCommand($command, $groupedArgs, false);
-                $groupedArgs['arguments'] = $args;
-                $continue = $this->runCommand($command);
+            // dirty hack, fix later
+            // global commands should not steal arguments
+            $args = $groupedArgs['arguments'];
+            $groupedArgs = $this->argumentsMatcher->matchCommand($command, $groupedArgs, false);
+            $groupedArgs['arguments'] = $args;
+            $continue = $this->runCommand($command);
 
-                if ($continue === false) {
-                    return [$groupedArgs, false];
-                }
+            if ($continue === false) {
+                return [$groupedArgs, false];
             }
         }
 
@@ -459,5 +454,50 @@ class Console implements IConsole {
         $this->consoleFormatter->style('blue')->parseStyle('clr=blue');
         $this->consoleFormatter->style('gray')->parseStyle('clr=gray');
         $this->consoleFormatter->style('black')->parseStyle('clr=black');
+    }
+
+    /**
+     * @return ICommand[]
+     */
+    protected function getGlobalHiddenCommands() {
+        $commands = [];
+
+        foreach ($this->getCommands() as $command) {
+            if ($command->isGlobal() && $command->isHidden()) {
+                $commands[] = $command;
+            }
+        }
+
+        return $commands;
+    }
+
+    /**
+     * @return ICommand[]
+     */
+    protected function getGlobalNotHiddenCommands() {
+        $commands = [];
+
+        foreach ($this->getCommands() as $command) {
+            if ($command->isGlobal() && ! $command->isHidden()) {
+                $commands[] = $command;
+            }
+        }
+
+        return $commands;
+    }
+
+    /**
+     * @return ICommand[]
+     */
+    protected function getNotGlobalCommands() {
+        $commands = [];
+
+        foreach ($this->getCommands() as $command) {
+            if ( ! $command->isGlobal()) {
+                $commands[] = $command;
+            }
+        }
+
+        return $commands;
     }
 }
