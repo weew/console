@@ -15,6 +15,8 @@ interface ICommandInvoker {
     /**
      * @param object $handler
      * @param ICommand $command
+     *
+     * @return mixed
      */
     function setup($handler, ICommand $command);
 
@@ -23,6 +25,8 @@ interface ICommandInvoker {
      * @param IInput $input
      * @param IOutput $output
      * @param IConsole $console
+     *
+     * @return mixed
      */
     function run($handler, IInput $input, IOutput $output, IConsole $console);
 }

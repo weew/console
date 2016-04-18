@@ -17,7 +17,7 @@ class CommandOptionsWidgetSpec extends ObjectBehavior {
     function it_renders() {
         $command = new Command();
         $command->option(OptionType::SINGLE, '--name', '-a');
-        $command->option(OptionType::SINGLE, '--name');
+        $command->option(OptionType::INCREMENTAL, '--name', '-n');
 
         $input = new Input();
         $output = new Output();

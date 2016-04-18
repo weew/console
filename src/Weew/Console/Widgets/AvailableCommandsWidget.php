@@ -70,7 +70,7 @@ class AvailableCommandsWidget {
         $facts = [];
 
         foreach ($commands as $command) {
-            if ( ! $command->isHidden()) {
+            if ( ! $command->isHidden() && ! $command->isGlobal()) {
                 $facts[$command->getName()] = $command->getDescription();
             }
         }

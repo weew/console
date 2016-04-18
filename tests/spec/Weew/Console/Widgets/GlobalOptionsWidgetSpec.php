@@ -4,6 +4,7 @@ namespace tests\spec\Weew\Console\Widgets;
 
 use PhpSpec\ObjectBehavior;
 use Prophecy\Argument;
+use Weew\Console\Console;
 use Weew\Console\Input;
 use Weew\Console\Output;
 use Weew\Console\Widgets\GlobalOptionsWidget;
@@ -17,7 +18,7 @@ class GlobalOptionsWidgetSpec extends ObjectBehavior {
         $output = new Output();
         $output->setEnableBuffering(true);
 
-        $this->beConstructedWith($input, $output);
+        $this->beConstructedWith($input, $output, new Console());
         $this->render();
     }
 }

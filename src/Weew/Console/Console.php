@@ -3,9 +3,14 @@
 namespace Weew\Console;
 
 use Exception;
+use Weew\Console\Commands\GlobalFormatCommand;
+use Weew\Console\Commands\GlobalHelpCommand;
+use Weew\Console\Commands\GlobalNoInteractionCommand;
+use Weew\Console\Commands\GlobalSilentModeCommand;
+use Weew\Console\Commands\GlobalVerbosityCommand;
 use Weew\Console\Commands\HelpCommand;
 use Weew\Console\Commands\ListCommand;
-use Weew\Console\Commands\VersionCommand;
+use Weew\Console\Commands\GlobalVersionCommand;
 use Weew\Console\Exceptions\InvalidCommandException;
 use Weew\Console\Widgets\ExceptionWidget;
 use Weew\ConsoleArguments\ArgumentsMatcher;
@@ -15,8 +20,6 @@ use Weew\ConsoleArguments\Exceptions\MissingCommandNameException;
 use Weew\ConsoleArguments\IArgumentsMatcher;
 use Weew\ConsoleArguments\IArgumentsParser;
 use Weew\ConsoleArguments\ICommand;
-use Weew\ConsoleArguments\Option;
-use Weew\ConsoleArguments\OptionType;
 use Weew\ConsoleFormatter\ConsoleFormatter;
 use Weew\ConsoleFormatter\IConsoleFormatter;
 
@@ -40,6 +43,11 @@ class Console implements IConsole {
      * @var object[]
      */
     protected $commands = [];
+
+    /**
+     * @var string
+     */
+    protected $defaultCommandName = 'list';
 
     /**
      * @var ICommandInvoker
@@ -194,6 +202,21 @@ class Console implements IConsole {
         $this->commands[] = $consoleCommand;
     }
 
+
+    /**
+     * @return string
+     */
+    public function getDefaultCommandName() {
+        return $this->defaultCommandName;
+    }
+
+    /**
+     * @param string $commandName
+     */
+    public function setDefaultCommandName($commandName) {
+        $this->defaultCommandName = $commandName;
+    }
+
     /**
      * @param array $argv
      */
@@ -279,14 +302,13 @@ class Console implements IConsole {
      * @param array $args
      */
     protected function handleArgs(array $args) {
-        $this->detectOptions($args);
+        if ($this->runGlobalCommands($args) === false) {
+            return;
+        }
 
         try {
-            if ($this->interruptCommand($args)) {
-                return;
-            }
-
             $command = $this->argumentsMatcher->matchCommands($this->commands, $args);
+            $command = clone $command;
             $this->runCommand($command);
         } catch (MissingCommandNameException $ex) {
             array_unshift($args, $this->getDefaultCommandName());
@@ -298,76 +320,62 @@ class Console implements IConsole {
     }
 
     /**
-     * @param array $args
-     *
-     * @return bool
-     */
-    protected function interruptCommand(array $args) {
-        return $this->interruptForHelp($args)
-            || $this->interruptForVersion($args);
-    }
-
-    /**
-     * @param array $args
-     *
-     * @return bool
-     */
-    protected function interruptForHelp(array $args) {
-        $groupedArgs = $this->argumentsParser->group($args);
-        $helpOption = new Option(OptionType::BOOLEAN, '--help', '-h');
-        $this->argumentsMatcher->matchOption($helpOption, $groupedArgs);
-
-        list($commandName, $args) = $this->argumentsMatcher->matchCommandName($args);
-
-        if ($commandName === 'help') {
-            return false;
-        }
-
-        if ($helpOption->hasValue() && $commandName) {
-            $this->parseString(s('help %s', $commandName));
-
-            return true;
-        }
-
-        return false;
-    }
-
-    /**
-     * @param array $args
-     *
-     * @return bool
-     */
-    protected function interruptForVersion(array $args) {
-        $groupedArgs = $this->argumentsParser->group($args);
-        $versionOption = new Option(OptionType::BOOLEAN, '--version', '-V');
-        $this->argumentsMatcher->matchOption($versionOption, $groupedArgs);
-
-        if ($versionOption->hasValue()) {
-            $this->parseString('version');
-
-            return true;
-        }
-
-        return false;
-    }
-
-    /**
      * @param ICommand $command
+     * @param bool $isolate
+     *
+     * @return mixed
      */
-    protected function runCommand(ICommand $command) {
+    protected function runCommand(ICommand $command, $isolate = true) {
         try {
-            $input = clone $this->input;
+            if ($isolate) {
+                $input = clone $this->input;
+                $output = clone $this->output;
+            } else {
+                $input = $this->input;
+                $output = $this->output;
+            }
+
             $input->setCommand($command);
 
-            $this->commandInvoker->run(
-                $command->getHandler(),
-                $input,
-                $this->output,
-                $this
+            return $this->commandInvoker->run(
+                $command->getHandler(), $input, $output, $this
             );
         } catch (Exception $ex) {
             $widget = new ExceptionWidget($this->input, $this->output);
             $widget->render($ex);
+        }
+    }
+
+    /**
+     * @param array $args
+     *
+     * @return bool
+     */
+    protected function runGlobalCommands(array $args) {
+        foreach ($this->getCommands() as $command) {
+            $command = clone $command;
+
+            // run commands that are global but will for sure
+            // not generate any output or interrupt the flow
+            if ($command->isGlobal() && $command->isHidden()) {
+                $this->argumentsMatcher->matchCommand($command, $args);
+                $this->runCommand($command, false);
+            }
+        }
+
+        foreach ($this->getCommands() as $command) {
+            $command = clone $command;
+
+            // run commands that might generate output or
+            // try to interrupt the flow
+            if ($command->isGlobal() && ! $command->isHidden()) {
+                $this->argumentsMatcher->matchCommand($command, $args);
+                $continue = $this->runCommand($command);
+
+                if ($continue === false) {
+                    return false;
+                }
+            }
         }
     }
 
@@ -399,7 +407,6 @@ class Console implements IConsole {
         }
     }
 
-
     /**
      * @return ICommandInvoker
      */
@@ -412,68 +419,15 @@ class Console implements IConsole {
      */
     protected function addDefaultCommands() {
         $this->addCommands([
-            new ListCommand($this),
-            new HelpCommand($this),
-            new VersionCommand($this),
+            new GlobalVersionCommand(),
+            new GlobalFormatCommand(),
+            new GlobalSilentModeCommand(),
+            new GlobalNoInteractionCommand(),
+            new GlobalHelpCommand(),
+            new GlobalVerbosityCommand(),
+            new ListCommand(),
+            new HelpCommand(),
         ]);
-    }
-
-    /**
-     * @param array $args
-     */
-    protected function detectOptions($args) {
-        $this->detectVerbosity($args);
-        $this->detectOutputFormat($args);
-        $this->detectSilentMode($args);
-    }
-
-    /**
-     * @param array $args
-     */
-    protected function detectSilentMode(array $args) {
-        $args = $this->argumentsParser->group($args);
-        $option = new Option(OptionType::BOOLEAN, '--silent', '-s');
-        $this->argumentsMatcher->matchOption($option, $args);
-
-        if ($option->getValue()) {
-            $this->output->setOutputVerbosity(OutputVerbosity::SILENT);
-        }
-    }
-
-    /**
-     * @param array $args
-     */
-    protected function detectVerbosity(array $args) {
-        $option = new Option(OptionType::INCREMENTAL, '--verbosity', '-v');
-        $this->argumentsMatcher->matchOption($option, $args);
-
-        if ($option->hasValue()) {
-            $this->output->setOutputVerbosity(
-                OutputVerbosity::getVerbosityForLevel($option->getValue())
-            );
-        }
-    }
-
-    /**
-     * @param array $args
-     */
-    protected function detectOutputFormat(array $args) {
-        $args = $this->argumentsParser->group($args);
-        $option = new Option(OptionType::SINGLE_OPTIONAL, '--format', '-f');
-        $this->argumentsMatcher->matchOption($option, $args);
-
-        if ($option->getValue() === 'plain') {
-            $this->output->setOutputFormat(OutputFormat::PLAIN);
-        } else if ($option->getValue() === 'raw') {
-            $this->output->setOutputFormat(OutputFormat::RAW);
-        }
-    }
-
-    /**
-     * @return string
-     */
-    protected function getDefaultCommandName() {
-        return 'list';
     }
 
     /**

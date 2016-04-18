@@ -43,16 +43,20 @@ class CommandOptionsWidget {
 
         foreach ($options as $option) {
             $name = $option->getName();
-            $alias = $option->getAlias();
-            $description = $option->getDescription();
+            $alias = '   ';
 
-            if ($alias === null) {
-                $alias = '';
-            } else {
-                $alias .= ', ';
+
+            if ($option->getAlias()) {
+                $alias = $option->getAlias();
+
+                if ($option->isIncremental()) {
+                    $alias = s('-:a|:a:a|:a:a:a', [':a' => substr($alias, 1)]);
+                }
+
+                $alias .= ',';
             }
 
-            $table->addRow("<keyword>$alias$name</keyword>", $description);
+            $table->addRow("<keyword>$alias $name</keyword>", $option->getDescription());
         }
 
         $table->render();

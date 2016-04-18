@@ -17,9 +17,11 @@ class CommandInvoker implements ICommandInvoker {
     /**
      * @param object $handler
      * @param ICommand $command
+     *
+     * @return mixed
      */
     public function setup($handler, ICommand $command) {
-        $handler->setup($command);
+        return $handler->setup($command);
     }
 
     /**
@@ -27,8 +29,10 @@ class CommandInvoker implements ICommandInvoker {
      * @param IInput $input
      * @param IOutput $output
      * @param IConsole $console
+     *
+     * @return mixed
      */
     public function run($handler, IInput $input, IOutput $output, IConsole $console) {
-        $handler->run($input, $output, $console);
+        return $handler->run($input, $output, $console);
     }
 }

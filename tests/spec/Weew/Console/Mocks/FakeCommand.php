@@ -8,6 +8,10 @@ use Weew\Console\IOutput;
 use Weew\ConsoleArguments\ICommand;
 
 class FakeCommand {
-    public function setup(ICommand $command) {}
-    public function run(IInput $input, IOutput $output, IConsole $console) {}
+    public function setup(ICommand $command) {
+        return 'setup';
+    }
+    public function run(IInput $input, IOutput $output, IConsole $console) {
+        return 'run';
+    }
 }

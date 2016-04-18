@@ -17,23 +17,8 @@ use Weew\ConsoleArguments\ArgumentType;
 use Weew\ConsoleArguments\Exceptions\AmbiguousCommandException;
 use Weew\ConsoleArguments\Exceptions\CommandNotFoundException;
 use Weew\ConsoleArguments\ICommand;
-use Weew\ConsoleArguments\OptionType;
 
 class HelpCommand {
-    /**
-     * @var IConsole
-     */
-    private $console;
-
-    /**
-     * HelpCommand constructor.
-     *
-     * @param IConsole $console
-     */
-    public function __construct(IConsole $console) {
-        $this->console = $console;
-    }
-
     /**
      * @param ICommand $command
      */
@@ -56,9 +41,10 @@ EOT
     /**
      * @param IInput $input
      * @param IOutput $output
+     * @param IConsole $console
      */
-    public function run(IInput $input, IOutput $output) {
-        $command = $this->findCommand($input);
+    public function run(IInput $input, IOutput $output, IConsole $console) {
+        $command = $this->findCommand($input, $console);
 
         $widget = new CommandDescriptionWidget($input, $output);
         $widget->render($command);
@@ -66,7 +52,7 @@ EOT
         $widget = new CommandUsageWidget($input, $output);
         $widget->render($command);
 
-        $widget = new GlobalOptionsWidget($input, $output);
+        $widget = new GlobalOptionsWidget($input, $output, $console);
         $widget->render();
 
         $widget = new CommandArgumentsWidget($input, $output);
@@ -81,16 +67,18 @@ EOT
 
     /**
      * @param IInput $input
+     * @param IConsole $console
      *
      * @return ICommand
      * @throws AmbiguousCommandException
      * @throws CommandNotFoundException
      */
-    protected function findCommand(IInput $input) {
+    protected function findCommand(IInput $input, IConsole $console) {
         if ($input->hasArgument('command')) {
             $matcher = new ArgumentsMatcher(new ArgumentsParser());
+
             return $matcher->findCommand(
-                $this->console->getCommands(), $input->getArgument('command')
+                $console->getCommands(), $input->getArgument('command')
             );
         }
 

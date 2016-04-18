@@ -24,20 +24,19 @@ class CommandInvokerSpec extends ObjectBehavior {
         $this->create(stdClass::class)->shouldHaveType(stdClass::class);
     }
 
-    function it_setups_handler(FakeCommand $fakeCommand) {
+    function it_setups_handler() {
+        $fakeCommand = new FakeCommand();
         $command = new Command();
-        $fakeCommand->setup($command)->shouldBeCalled();
-        
-        $this->setup($fakeCommand, $command);
+
+        $this->setup($fakeCommand, $command)->shouldBe('setup');
     }
 
-    function it_runs_handler(FakeCommand $fakeCommand) {
+    function it_runs_handler() {
+        $fakeCommand = new FakeCommand();
         $input = new Input();
         $output = new Output();
         $console = new Console();
 
-        $fakeCommand->run($input, $output, $console)->shouldBeCalled();
-
-        $this->run($fakeCommand, $input, $output, $console);
+        $this->run($fakeCommand, $input, $output, $console)->shouldBe('run');
     }
 }

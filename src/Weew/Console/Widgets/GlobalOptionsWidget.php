@@ -2,6 +2,7 @@
 
 namespace Weew\Console\Widgets;
 
+use Weew\Console\IConsole;
 use Weew\Console\IInput;
 use Weew\Console\IOutput;
 
@@ -17,14 +18,21 @@ class GlobalOptionsWidget {
     private $output;
 
     /**
+     * @var IConsole
+     */
+    private $console;
+
+    /**
      * GlobalOptionsWidget constructor.
      *
      * @param IInput $input
      * @param IOutput $output
+     * @param IConsole $console
      */
-    public function __construct(IInput $input, IOutput $output) {
+    public function __construct(IInput $input, IOutput $output, IConsole $console) {
         $this->input = $input;
         $this->output = $output;
+        $this->console = $console;
     }
 
     /**
@@ -32,14 +40,28 @@ class GlobalOptionsWidget {
      */
     public function render() {
         $table = new TableWidget($this->input, $this->output);
-        $table
-            ->setTitle("<header>Global options:</header>")
-            ->addRow("<keyword>-s, --silent</keyword>", "Disable output")
-            ->addRow("<keyword>-n, --no-interaction</keyword>", "Disable interactions")
-            ->addRow("<keyword>-V, --version</keyword>", "Show application version")
-            ->addRow("<keyword>-h, --help</keyword>", "Show help text")
-            ->addRow("<keyword>-f, --format</keyword>", "Output format: normal, plain, raw")
-            ->addRow("<keyword>-v|vv|vvv, --verbosity</keyword>", "Output verbosity: 0 = normal, 1 = verbose, 2 = debug, -1 = silent");
+        $table->setTitle("<header>Global options:</header>");
+
+        foreach ($this->console->getCommands() as $command) {
+            if ($command->isGlobal()) {
+                foreach ($command->getOptions() as $option) {
+                    $name = $option->getName();
+                    $alias = '   ';
+
+                    if ($option->getAlias()) {
+                        $alias = $option->getAlias();
+
+                        if ($option->isIncremental()) {
+                            $alias = s('-:a|:a:a|:a:a:a', [':a' => substr($alias, 1)]);
+                        }
+
+                        $alias .= ',';
+                    }
+
+                    $table->addRow("<keyword>$alias $name</keyword>", $option->getDescription());
+                }
+            }
+        }
 
         $table->render();
     }

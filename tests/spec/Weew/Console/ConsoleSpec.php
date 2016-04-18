@@ -8,19 +8,13 @@ use stdClass;
 use tests\spec\Weew\Console\Mocks\ErrorCommand;
 use tests\spec\Weew\Console\Mocks\FakeCommand;
 use Weew\Console\CommandInvoker;
-use Weew\Console\Commands\HelpCommand;
-use Weew\Console\Commands\ListCommand;
-use Weew\Console\Commands\VersionCommand;
 use Weew\Console\Console;
 use Weew\Console\Exceptions\InvalidCommandException;
 use Weew\Console\ICommandInvoker;
-use Weew\Console\IConsole;
 use Weew\Console\IInput;
 use Weew\Console\Input;
 use Weew\Console\IOutput;
 use Weew\Console\Output;
-use Weew\Console\OutputFormat;
-use Weew\Console\OutputVerbosity;
 use Weew\ConsoleArguments\Command;
 use Weew\ConsoleArguments\ICommand;
 use Weew\ConsoleFormatter\ConsoleFormatter;
@@ -166,125 +160,6 @@ class ConsoleSpec extends ObjectBehavior {
         $this->parseString('command');
     }
 
-    function it_shows_help(ICommandInvoker $invoker) {
-        $this->getOutput()->setEnableBuffering(true);
-        $this->setCommandInvoker($invoker);
-        $invoker->run(
-            Argument::type(HelpCommand::class),
-            Argument::type(IInput::class),
-            Argument::type(IOutput::class),
-            Argument::type(IConsole::class)
-        )->shouldBeCalled();
-
-        $this->parseString('help');
-    }
-
-    function it_lists_commands(ICommandInvoker $invoker) {
-        $this->getOutput()->setEnableBuffering(true);
-        $this->setCommandInvoker($invoker);
-        $invoker->run(
-            Argument::type(ListCommand::class),
-            Argument::type(IInput::class),
-            Argument::type(IOutput::class),
-            Argument::type(IConsole::class)
-        )->shouldBeCalled();
-
-        $this->parseString('list');
-    }
-
-    function it_lists_commands_by_default(ICommandInvoker $invoker) {
-        $this->getOutput()->setEnableBuffering(true);
-        $this->setCommandInvoker($invoker);
-        $invoker->run(
-            Argument::type(ListCommand::class),
-            Argument::type(IInput::class),
-            Argument::type(IOutput::class),
-            Argument::type(IConsole::class)
-        )->shouldBeCalled();
-
-        $this->parseString('');
-    }
-
-    function it_shows_help_for_command(ICommandInvoker $invoker) {
-        $this->getOutput()->setEnableBuffering(true);
-        $this->setCommandInvoker($invoker);
-        $invoker->run(
-            Argument::type(HelpCommand::class),
-            Argument::type(IInput::class),
-            Argument::type(IOutput::class),
-            Argument::type(IConsole::class)
-        )->shouldBeCalled();
-
-        $this->parseString('help list');
-    }
-
-    function it_shows_help_with_flag(ICommandInvoker $invoker) {
-        $this->getOutput()->setEnableBuffering(true);
-        $this->setCommandInvoker($invoker);
-        $invoker->run(
-            Argument::type(HelpCommand::class),
-            Argument::type(IInput::class),
-            Argument::type(IOutput::class),
-            Argument::type(IConsole::class)
-        )->shouldBeCalled();
-
-        $this->parseString('list --help');
-    }
-
-    function it_shows_help_without_command_name(ICommandInvoker $invoker) {
-        $this->getOutput()->setEnableBuffering(true);
-        $this->setCommandInvoker($invoker);
-        $invoker->run(
-            Argument::type(HelpCommand::class),
-            Argument::type(IInput::class),
-            Argument::type(IOutput::class),
-            Argument::type(IConsole::class)
-        )->shouldBeCalled();
-
-        $this->parseString('--help');
-    }
-
-    function it_shows_version(ICommandInvoker $invoker) {
-        $this->getOutput()->setEnableBuffering(true);
-        $this->setCommandInvoker($invoker);
-        $invoker->run(
-            Argument::type(VersionCommand::class),
-            Argument::type(IInput::class),
-            Argument::type(IOutput::class),
-            Argument::type(IConsole::class)
-        )->shouldBeCalled();
-
-        $this->parseString('-V');
-    }
-
-    function it_detect_verbosity() {
-        $this->getOutput()->setEnableBuffering(true);
-        $this->parseString('');
-        $this->getOutput()->getOutputVerbosity()->shouldBe(OutputVerbosity::NORMAL);
-        $this->parseString('-v');
-        $this->getOutput()->getOutputVerbosity()->shouldBe(OutputVerbosity::VERBOSE);
-        $this->parseString('-vv');
-        $this->getOutput()->getOutputVerbosity()->shouldBe(OutputVerbosity::DEBUG);
-        $this->parseString('-v -1');
-        $this->getOutput()->getOutputVerbosity()->shouldBe(OutputVerbosity::SILENT);
-    }
-
-    function it_detects_silent_mode() {
-        $this->getOutput()->setEnableBuffering(true);
-        $this->parseString('-s');
-        $this->getOutput()->getOutputVerbosity()->shouldBe(OutputVerbosity::SILENT);
-    }
-
-    function it_detects_format() {
-        $this->getOutput()->setEnableBuffering(true);
-        $this->parseString('-f raw');
-        $this->getOutput()->getOutputFormat()->shouldBe(OutputFormat::RAW);
-        $this->parseString('-f plain');
-        $this->getOutput()->getOutputFormat()->shouldBe(OutputFormat::PLAIN);
-        $this->parseString('');
-        $this->getOutput()->getOutputFormat()->shouldBe(OutputFormat::PLAIN);
-    }
-
     function it_handles_command_errors() {
         $command = new ErrorCommand();
         $consoleCommand = new Command('error');
@@ -293,5 +168,16 @@ class ConsoleSpec extends ObjectBehavior {
 
         $this->getOutput()->setEnableBuffering(true);
         $this->parseString('error');
+    }
+
+    function it_takes_and_returns_default_command_name() {
+        $this->getDefaultCommandName()->shouldBe('list');
+        $this->setDefaultCommandName('name');
+        $this->getDefaultCommandName()->shouldBe('name');
+    }
+
+    function it_runs_and_interrupts_for_global_command() {
+        $this->getOutput()->setEnableBuffering(true);
+        $this->parseString('list --help');
     }
 }

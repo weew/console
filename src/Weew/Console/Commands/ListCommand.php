@@ -8,24 +8,9 @@ use Weew\Console\IOutput;
 use Weew\Console\Widgets\AvailableCommandsWidget;
 use Weew\Console\Widgets\ConsoleDescriptionWidget;
 use Weew\Console\Widgets\GlobalOptionsWidget;
-use Weew\ConsoleArguments\ArgumentType;
 use Weew\ConsoleArguments\ICommand;
 
 class ListCommand {
-    /**
-     * @var IConsole
-     */
-    protected $console;
-
-    /**
-     * DefaultCommandHandler constructor.
-     *
-     * @param IConsole $console
-     */
-    public function __construct(IConsole $console) {
-        $this->console = $console;
-    }
-
     /**
      * @param ICommand $command
      */
@@ -38,15 +23,16 @@ class ListCommand {
     /**
      * @param IInput $input
      * @param IOutput $output
+     * @param IConsole $console
      */
-    public function run(IInput $input, IOutput $output) {
+    public function run(IInput $input, IOutput $output, IConsole $console) {
         $widget = new ConsoleDescriptionWidget($input, $output);
-        $widget->render($this->console);
+        $widget->render($console);
 
-        $widget = new GlobalOptionsWidget($input, $output);
+        $widget = new GlobalOptionsWidget($input, $output, $console);
         $widget->render();
 
         $widget = new AvailableCommandsWidget($input, $output);
-        $widget->render($this->console);
+        $widget->render($console);
     }
 }

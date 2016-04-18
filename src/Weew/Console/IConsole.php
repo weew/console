@@ -63,6 +63,16 @@ interface IConsole {
     function addCommand($command);
 
     /**
+     * @return string
+     */
+    function getDefaultCommandName();
+
+    /**
+     * @param string $commandName
+     */
+    function setDefaultCommandName($commandName);
+
+    /**
      * @param array $argv
      */
     function parseArgv(array $argv = null);
