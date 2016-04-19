@@ -138,8 +138,6 @@ class TableWidget {
      * Render table.
      */
     public function render() {
-        $this->output->writeLine();
-
         if ($this->title !== null) {
             $this->output->writeLine($this->title);
         }

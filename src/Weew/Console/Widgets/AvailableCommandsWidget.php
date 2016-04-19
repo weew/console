@@ -55,6 +55,7 @@ class AvailableCommandsWidget {
                 $table->addRow("<keyword>$name</keyword>", $description);
             }
 
+            $this->output->writeLine();
             $table->render();
         } else {
             $this->output->writeLineIndented('There are no commands yet');

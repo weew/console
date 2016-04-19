@@ -62,6 +62,7 @@ class CommandArgumentsWidget {
             $table->addRow("<keyword>$name</keyword>", $description);
         }
 
+        $this->output->writeLine();
         $table->render();
     }
 }

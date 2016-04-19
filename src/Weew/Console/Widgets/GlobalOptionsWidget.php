@@ -63,6 +63,7 @@ class GlobalOptionsWidget {
             }
         }
 
+        $this->output->writeLine();
         $table->render();
     }
 }

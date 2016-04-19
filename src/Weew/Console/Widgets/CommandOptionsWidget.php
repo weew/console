@@ -59,6 +59,7 @@ class CommandOptionsWidget {
             $table->addRow("<keyword>$alias $name</keyword>", $option->getDescription());
         }
 
+        $this->output->writeLine();
         $table->render();
     }
 }
