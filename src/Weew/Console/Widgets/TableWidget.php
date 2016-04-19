@@ -4,6 +4,7 @@ namespace Weew\Console\Widgets;
 
 use Weew\Console\IInput;
 use Weew\Console\IOutput;
+use Weew\Console\OutputFormat;
 
 class TableWidget {
     /**
@@ -142,7 +143,7 @@ class TableWidget {
             $this->output->writeLine($this->title);
         }
 
-        $rows = $this->prerenderRows($this->rows, $this->output);
+        $rows = $this->formatRows($this->rows);
         $widths = $this->calculateColumnWidths($rows);
 
         foreach ($rows as $row) {
@@ -151,7 +152,8 @@ class TableWidget {
             foreach ($row['cols'] as $colIndex => $col) {
                 if ($type === '@row') {
                     $width = array_get($widths, $colIndex);
-                    $col = str_pad($col, $width);
+                    $colWidth = strlen($this->output->format($col, OutputFormat::PLAIN));
+                    $col .= str_repeat(' ', $width - $colWidth);
                 }
 
                 $this->output->write($col);
@@ -178,11 +180,10 @@ class TableWidget {
 
     /**
      * @param array $rows
-     * @param IOutput $output
      *
      * @return array
      */
-    private function prerenderRows(array $rows, IOutput $output) {
+    private function formatRows(array $rows) {
         foreach ($rows as $rowIndex => $row) {
             $type = $row['type'];
             $indent = $this->indent;
@@ -200,7 +201,6 @@ class TableWidget {
                     $col = $gutter . $verticalSeparator . $gutter . $col;
                 }
 
-                $col = $output->format($col);
                 array_set($row['cols'], $colIndex, $col);
             }
 
@@ -225,6 +225,7 @@ class TableWidget {
 
             foreach ($row['cols'] as $colIndex => $col) {
                 $currentWidth = array_get($widths, $colIndex, 0);
+                $col = $this->output->format($col, OutputFormat::PLAIN);
                 $width = strlen($col);
 
                 if ($width > $currentWidth) {

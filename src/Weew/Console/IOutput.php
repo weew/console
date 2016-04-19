@@ -55,10 +55,11 @@ interface IOutput {
 
     /**
      * @param string $string
+     * @param null $format
      *
      * @return string
      */
-    function format($string);
+    function format($string, $format = null);
 
     /**
      * @return int

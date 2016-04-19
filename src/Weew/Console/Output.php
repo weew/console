@@ -141,15 +141,21 @@ class Output implements IOutput {
     /**
      * @param string $string
      *
+     * @param null $format
+     *
      * @return string
      */
-    public function format($string) {
+    public function format($string, $format = null) {
+        if ($format === null) {
+            $format = $this->getOutputFormat();
+        }
+
         // print output with ansi support
-        if ($this->is(OutputFormat::NORMAL)) {
+        if (($format & OutputFormat::NORMAL) === OutputFormat::NORMAL) {
             return $this->formatter->formatAnsi($string);
         }
         // print output without ansi support
-        else if ($this->is(OutputFormat::PLAIN)) {
+        else if (($format & OutputFormat::PLAIN) === OutputFormat::PLAIN) {
             return $this->formatter->formatPlain($string);
         }
 
