@@ -45,7 +45,7 @@ class AvailableCommandsWidget {
                 if (stripos($name, ':') !== false) {
                     $header = array_first(explode(':', $name));
 
-                    if ( ! in_array($header, $headers)) {
+                    if ( ! array_contains($headers, $header)) {
                         $headers[] = $header;
 
                         $table->addSection("<header>$header</header>");
