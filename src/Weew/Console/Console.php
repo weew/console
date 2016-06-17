@@ -6,6 +6,7 @@ use Exception;
 use Weew\Console\Commands\GlobalFormatCommand;
 use Weew\Console\Commands\GlobalHelpCommand;
 use Weew\Console\Commands\GlobalNoInteractionCommand;
+use Weew\Console\Commands\GlobalPassthroughCommand;
 use Weew\Console\Commands\GlobalSilentModeCommand;
 use Weew\Console\Commands\GlobalVerbosityCommand;
 use Weew\Console\Commands\HelpCommand;
@@ -38,6 +39,11 @@ class Console implements IConsole {
      * @var string
      */
     protected $version = '1.0';
+
+    /**
+     * @var bool
+     */
+    protected $catchErrors = true;
 
     /**
      * @var object[]
@@ -151,6 +157,24 @@ class Console implements IConsole {
      */
     public function setVersion($version) {
         $this->version = $version;
+
+        return $this;
+    }
+
+    /**
+     * @return bool
+     */
+    public function getCatchErrors() {
+        return $this->catchErrors;
+    }
+
+    /**
+     * @param bool $catchErrors
+     *
+     * @return IConsole
+     */
+    public function setCatchErrors($catchErrors) {
+        $this->catchErrors = $catchErrors;
 
         return $this;
     }
@@ -300,6 +324,8 @@ class Console implements IConsole {
 
     /**
      * @param array $args
+     *
+     * @throws Exception
      */
     protected function handleArgs(array $args) {
         $groupedArgs = $this->argumentsParser->group($args);
@@ -318,8 +344,12 @@ class Console implements IConsole {
             array_unshift($args, $this->getDefaultCommandName());
             $this->parseArgs($args);
         } catch (Exception $ex) {
-            $widget = new ExceptionWidget($this->input, $this->output);
-            $widget->render($ex);
+            if ($this->getCatchErrors()) {
+                $widget = new ExceptionWidget($this->input, $this->output);
+                $widget->render($ex);
+            } else {
+                throw $ex;
+            }
         }
     }
 
@@ -328,6 +358,7 @@ class Console implements IConsole {
      * @param bool $isolate
      *
      * @return mixed
+     * @throws Exception
      */
     protected function runCommand(ICommand $command, $isolate = true) {
         try {
@@ -345,8 +376,12 @@ class Console implements IConsole {
                 $command->getHandler(), $input, $output, $this
             );
         } catch (Exception $ex) {
-            $widget = new ExceptionWidget($this->input, $this->output);
-            $widget->render($ex);
+            if ($this->getCatchErrors()) {
+                $widget = new ExceptionWidget($this->input, $this->output);
+                $widget->render($ex);
+            } else {
+                throw $ex;
+            }
         }
     }
 
@@ -430,6 +465,7 @@ class Console implements IConsole {
             new GlobalNoInteractionCommand(),
             new GlobalHelpCommand(),
             new GlobalVerbosityCommand(),
+            new GlobalPassthroughCommand(),
             new ListCommand(),
             new HelpCommand(),
         ]);

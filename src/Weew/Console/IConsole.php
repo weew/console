@@ -43,6 +43,18 @@ interface IConsole {
     function setVersion($version);
 
     /**
+     * @return bool
+     */
+    function getCatchErrors();
+
+    /**
+     * @param bool $catchErrors
+     *
+     * @return IConsole
+     */
+    function setCatchErrors($catchErrors);
+
+    /**
      * @return ICommand[]
      */
     function getCommands();

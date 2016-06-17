@@ -180,4 +180,10 @@ class ConsoleSpec extends ObjectBehavior {
         $this->getOutput()->setEnableBuffering(true);
         $this->parseString('list --help');
     }
+
+    function it_takes_and_returns_catch_errors_flag() {
+        $this->getCatchErrors()->shouldBe(true);
+        $this->setCatchErrors(false)->shouldBe($this);
+        $this->getCatchErrors()->shouldBe(false);
+    }
 }
