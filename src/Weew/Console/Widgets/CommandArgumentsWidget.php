@@ -49,13 +49,13 @@ class CommandArgumentsWidget {
                 if ($argument->isMultiple()) {
                     $name = "\<$name...>";
                 } else {
-                    $name = "\<name>";
+                    $name = "\<$name>";
                 }
             } else {
                 if ($argument->isMultiple()) {
                     $name = "\<$name... ?>";
                 } else {
-                    $name = "\<name ?>";
+                    $name = "\<$name ?>";
                 }
             }
 
