@@ -153,7 +153,11 @@ class TableWidget {
                 if ($type === '@row') {
                     $width = array_get($widths, $colIndex);
                     $colWidth = strlen($this->output->format($col, OutputFormat::PLAIN));
-                    $col .= str_repeat(' ', $width - $colWidth);
+
+                    // if not last row
+                    if ( array_has($row['cols'], $colIndex + 1)) {
+                        $col .= str_repeat(' ', $width - $colWidth);
+                    }
                 }
 
                 $this->output->write($col);
