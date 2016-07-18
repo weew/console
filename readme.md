@@ -1,10 +1,10 @@
 # Console application
 
-[![Build Status](https://img.shields.io/travis/weew/php-console.svg)](https://travis-ci.org/weew/php-console)
-[![Code Quality](https://img.shields.io/scrutinizer/g/weew/php-console.svg)](https://scrutinizer-ci.com/g/weew/php-console)
-[![Test Coverage](https://img.shields.io/coveralls/weew/php-console.svg)](https://coveralls.io/github/weew/php-console)
-[![Version](https://img.shields.io/packagist/v/weew/php-console.svg)](https://packagist.org/packages/weew/php-console)
-[![Licence](https://img.shields.io/packagist/l/weew/php-console.svg)](https://packagist.org/packages/weew/php-console)
+[![Build Status](https://img.shields.io/travis/weew/console.svg)](https://travis-ci.org/weew/console)
+[![Code Quality](https://img.shields.io/scrutinizer/g/weew/console.svg)](https://scrutinizer-ci.com/g/weew/console)
+[![Test Coverage](https://img.shields.io/coveralls/weew/console.svg)](https://coveralls.io/github/weew/console)
+[![Version](https://img.shields.io/packagist/v/weew/console.svg)](https://packagist.org/packages/weew/console)
+[![Licence](https://img.shields.io/packagist/l/weew/console.svg)](https://packagist.org/packages/weew/console)
 
 ## Table of contents
 
@@ -21,7 +21,7 @@
 
 ## Installation
 
-`composer require weew/php-console`
+`composer require weew/console`
 
 ## Introduction
 
@@ -41,9 +41,9 @@ $console = new Console();
 
 ## Commands
 
-Commands are the pieces of logic that you might plug and play into your console application. A command can by anything. There is no interface contract that you must fulfill. This design choice was made because of the dependency injection support for the [weew/php-console-container-aware](https://github.com/weew/php-console-formatter) package.
+Commands are the pieces of logic that you might plug and play into your console application. A command can by anything. There is no interface contract that you must fulfill. This design choice was made because of the dependency injection support for the [weew/console-container-aware](https://github.com/weew/console-formatter) package.
 
-Your command must have the `setup` and `run` method. For further information about configuration of commands refer to the [weew/php-console-arguments](https://github.com/weew/php-console-arguments) package.
+Your command must have the `setup` and `run` method. For further information about configuration of commands refer to the [weew/console-arguments](https://github.com/weew/console-arguments) package.
 
 ```php
 class SampleCommand {
@@ -127,7 +127,7 @@ $input->readChar();
 
 ## Output
 
-Output is used to print information to the terminal. It uses the [weew/php-console-formatter](https://github.com/weew/php-console-formatter) for styling and formatting of the text.
+Output is used to print information to the terminal. It uses the [weew/console-formatter](https://github.com/weew/console-formatter) for styling and formatting of the text.
 
 ```php
 $output->writeLine('<keyword>key: </keyword> value');
@@ -169,6 +169,6 @@ $response = $prompt->prompt('What is your name');
 
 ## Related projects
 
-- [Console formatter](https://github.com/weew/php-console-formatter) Used for styling of output
-- [Console arguments](https://github.com/weew/php-console-arguments) Used for parsing of arguments
-- [Container aware console](https://github.com/weew/php-console-container-aware) Container aware version of this package
+- [Console formatter](https://github.com/weew/console-formatter) Used for styling of output
+- [Console arguments](https://github.com/weew/console-arguments) Used for parsing of arguments
+- [Container aware console](https://github.com/weew/console-container-aware) Container aware version of this package

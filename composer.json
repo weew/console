@@ -1,5 +1,5 @@
 {
-    "name": "weew/php-console",
+    "name": "weew/console",
     "description": "Console application skeleton.",
     "license": "MIT",
     "authors": [
@@ -19,15 +19,15 @@
         }
     },
     "require": {
-        "weew/php-console-arguments": "^1.0",
-        "weew/php-console-formatter": "^2.1",
-        "weew/php-helpers-array": "^1.2",
-        "weew/php-helpers-string": "^1.7"
+        "weew/console-arguments": "^1.0",
+        "weew/console-formatter": "^2.1",
+        "weew/helpers-array": "^1.2",
+        "weew/helpers-string": "^1.7"
     },
     "require-dev": {
         "satooshi/php-coveralls": "^0.6.1",
         "phpspec/phpspec": "^2.4",
-        "weew/php-helpers-phpspec": "^1.0",
+        "weew/helpers-phpspec": "^1.0",
         "henrikbjorn/phpspec-code-coverage": "^2.0"
     }
 }
