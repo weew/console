@@ -47,5 +47,24 @@ class PromptHelperSpec extends ObjectBehavior {
         $input->readLine()->willReturn('', '', 'y');
         $this->ask('question')->shouldBe(true);
     }
+
+    function it_chooses(IInput $input) {
+        $input->readLine()->willReturn(1);
+        $this->choose('question', [
+            'key1' => 'option1',
+            'key2' => 'option2',
+        ])->shouldBe('key1');
+
+        $input->readLine()->willReturn(2);
+        $this->choose('question', [
+            'key1' => 'option1',
+            'key2' => 'option2',
+        ])->shouldBe('key2');
+
+        $input->readLine()->willReturn(3, 4, 1);
+        $this->choose('question', [
+            'key1' => 'option1',
+            'key2' => 'option2',
+        ])->shouldBe('key1');
     }
 }

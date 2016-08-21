@@ -91,5 +91,49 @@ class PromptHelper {
 
         return $this->ask($string, $default);
     }
+
+    /**
+     * @param string $string
+     * @param array $choices
+     *
+     * @return mixed
+     */
+    public function choose($string, array $choices) {
+        $this->output->writeLine("<question>$string</question>");
+
+        $choicesMap = [];
+
+        foreach ($choices as $subject => $message) {
+            $index = count($choicesMap) + 1;
+
+            $choicesMap[$index] = [
+                'subject' => $subject,
+                'message' => $message,
+            ];
+        }
+
+        foreach ($choicesMap as $index => $choice) {
+            $message = array_get($choice, 'message');
+
+            $this->output->writeLineIndented("[<yellow>$index</yellow>] $message");
+        }
+
+        $choice = null;
+
+        while (true) {
+            $this->output->writeIndented('Choice: ');
+            $input = $this->input->readLine();
+
+            if (array_has($choicesMap, $input)) {
+                $choice = array_get(array_get($choicesMap, $input), 'subject');
+                break;
+            }
+
+            if ( ! empty($input)) {
+                $this->output->writeLineIndented('<yellow>Invalid choice</yellow>');
+            }
+        }
+
+        return $choice;
     }
 }
