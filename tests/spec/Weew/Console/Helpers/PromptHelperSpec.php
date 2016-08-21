@@ -41,8 +41,11 @@ class PromptHelperSpec extends ObjectBehavior {
         $this->ask('question')->shouldBe(false);
 
         $input->readLine()->willReturn('');
-        $this->ask('question')->shouldBe(false);
+        $this->ask('question', false)->shouldBe(false);
         $input->readLine()->willReturn('');
         $this->ask('question', true)->shouldBe(true);
+        $input->readLine()->willReturn('', '', 'y');
+        $this->ask('question')->shouldBe(true);
+    }
     }
 }

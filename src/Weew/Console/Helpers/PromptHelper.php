@@ -41,8 +41,7 @@ class PromptHelper {
             $question = "<question>$string</question>: ";
         }
 
-        $this->output->writeIndented($question);
-
+        $this->output->write($question);
         $input = $this->input->readLine();
 
         if (strlen($input) == 0) {
@@ -58,20 +57,39 @@ class PromptHelper {
      *
      * @return bool
      */
-    public function ask($string, $default = false) {
-        $suffix = $default ? 'Y/n' : 'y/N';
+    public function ask($string, $default = null) {
+        if ($default === true) {
+            $suffix = 'Y/n';
+        } else if ($default === false) {
+            $suffix = 'y/N';
+        } else {
+            $suffix = 'y/n';
+        }
 
-        $this->output->writeIndented(
+        $this->output->write(
             "<question>$string</question> [<yellow>$suffix</yellow>]: "
         );
         $input = $this->input->readLine();
 
-        if ($input == 'y' or $input == 'yes') {
+        if (array_contains(['yes', 'y'], $input)) {
             return true;
-        } else if (empty($input) and $default) {
-            return true;
-        }else {
+        }
+
+        if (array_contains(['no', 'n'], $input)) {
             return false;
         }
+
+        if (empty($input)) {
+            if ($default === true) {
+                return true;
+            }
+
+            if ($default === false) {
+                return false;
+            }
+        }
+
+        return $this->ask($string, $default);
+    }
     }
 }
