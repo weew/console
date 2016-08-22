@@ -48,6 +48,10 @@ class PromptHelper {
             $input = $default;
         }
 
+        if ($input === null) {
+            return $this->prompt($string, $default);
+        }
+
         return $input;
     }
 

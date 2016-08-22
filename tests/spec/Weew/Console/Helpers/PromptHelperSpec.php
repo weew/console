@@ -23,8 +23,13 @@ class PromptHelperSpec extends ObjectBehavior {
     function it_prompts(IInput $input) {
         $input->readLine()->willReturn('value');
         $this->prompt('question')->shouldBe('value');
-        $input->readLine()->willReturn('');
-        $this->prompt('question')->shouldBe(null);
+
+        $input->readLine()->willReturn('', 'value');
+        $this->prompt('question')->shouldBe('value');
+
+        $input->readLine()->willReturn(null, 'value');
+        $this->prompt('question')->shouldBe('value');
+
         $input->readLine()->willReturn(null);
         $this->prompt('question', 'default')->shouldBe('default');
     }
