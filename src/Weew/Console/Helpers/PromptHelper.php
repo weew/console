@@ -99,16 +99,21 @@ class PromptHelper {
     /**
      * @param string $string
      * @param array $choices
+     * @param bool $useChoiceKeysAsSelector
      *
      * @return mixed
      */
-    public function choose($string, array $choices) {
+    public function choose($string, array $choices, $useChoiceKeysAsSelector = false) {
         $this->output->writeLine("<question>$string</question>");
 
         $choicesMap = [];
 
         foreach ($choices as $subject => $message) {
-            $index = count($choicesMap) + 1;
+            if ($useChoiceKeysAsSelector) {
+                $index = $subject;
+            } else {
+                $index = count($choicesMap) + 1;
+            }
 
             $choicesMap[$index] = [
                 'subject' => $subject,
