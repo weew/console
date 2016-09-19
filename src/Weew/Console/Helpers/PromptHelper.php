@@ -103,7 +103,7 @@ class PromptHelper {
      *
      * @return mixed
      */
-    public function choose($string, array $choices, $useChoiceKeysAsSelector = false) {
+    public function choose($string, array $choices, $useChoiceKeysAsSelector = true) {
         $this->output->writeLine("<question>$string</question>");
 
         $choicesMap = [];
