@@ -481,6 +481,7 @@ class Console implements IConsole {
 
         $this->consoleFormatter->style('question')->parseStyle('clr=green');
         $this->consoleFormatter->style('header')->parseStyle('clr=yellow');
+        $this->consoleFormatter->style('title')->parseStyle('clr=yellow');
         $this->consoleFormatter->style('keyword')->parseStyle('clr=green');
 
         $this->consoleFormatter->style('green')->parseStyle('clr=green');
@@ -490,6 +491,11 @@ class Console implements IConsole {
         $this->consoleFormatter->style('blue')->parseStyle('clr=blue');
         $this->consoleFormatter->style('gray')->parseStyle('clr=gray');
         $this->consoleFormatter->style('black')->parseStyle('clr=black');
+
+        $this->consoleFormatter->style('bold')->parseStyle('fmt=bold');
+        $this->consoleFormatter->style('italic')->parseStyle('fmt=italic');
+        $this->consoleFormatter->style('underline')->parseStyle('fmt=underline');
+        $this->consoleFormatter->style('strikethrough')->parseStyle('fmt=strikethrough');
     }
 
     /**
