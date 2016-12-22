@@ -101,6 +101,12 @@ $console->parseArgs(['colors', 'red', '--only-dark'];
 $console->parseArgv(['./file_name', 'colors', 'red', '--only-dark']);
 ```
 
+You can prevent a command from executing in parallel setting the appropriate flag.
+
+```php
+$command->setParallel(false);
+```
+
 ## Input
 
 Input contains all the information about the received arguments and offers some apis for interaction with the user.

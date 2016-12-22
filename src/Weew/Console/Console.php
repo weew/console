@@ -43,6 +43,11 @@ class Console implements IConsole {
     /**
      * @var bool
      */
+    protected $allowParallel = true;
+
+    /**
+     * @var bool
+     */
     protected $catchErrors = true;
 
     /**
@@ -59,6 +64,11 @@ class Console implements IConsole {
      * @var ICommandInvoker
      */
     protected $commandInvoker;
+
+    /**
+     * @var ICommandExecutionLock
+     */
+    protected $commandExecutionLock;
 
     /**
      * @var IArgumentsParser
@@ -89,16 +99,25 @@ class Console implements IConsole {
      * Console constructor.
      *
      * @param ICommandInvoker $commandInvoker
+     * @param ICommandExecutionLock $commandExecutionLock
      */
-    public function __construct(ICommandInvoker $commandInvoker = null) {
+    public function __construct(
+        ICommandInvoker $commandInvoker = null,
+        ICommandExecutionLock $commandExecutionLock = null
+    ) {
         if ( ! $commandInvoker instanceof ICommandInvoker) {
             $commandInvoker = $this->createCommandInvoker();
+        }
+
+        if ( ! $commandExecutionLock instanceof ICommandExecutionLock) {
+            $commandExecutionLock = $this->createCommandExecutionLock();
         }
 
         $this->argumentsParser = new ArgumentsParser();
         $this->argumentsMatcher = new ArgumentsMatcher($this->argumentsParser);
 
         $this->setCommandInvoker($commandInvoker);
+        $this->setCommandExecutionLock($commandExecutionLock);
         $this->setConsoleFormatter(new ConsoleFormatter());
         $this->setOutput(new Output($this->consoleFormatter));
         $this->setInput(new Input());
@@ -157,6 +176,24 @@ class Console implements IConsole {
      */
     public function setVersion($version) {
         $this->version = $version;
+
+        return $this;
+    }
+
+    /**
+     * @return bool
+     */
+    public function getAllowParallel() {
+        return $this->allowParallel;
+    }
+
+    /**
+     * @param bool $allowParallel
+     *
+     * @return IConsole
+     */
+    public function setAllowParallel($allowParallel) {
+        $this->allowParallel = $allowParallel;
 
         return $this;
     }
@@ -323,6 +360,20 @@ class Console implements IConsole {
     }
 
     /**
+     * @return ICommandExecutionLock
+     */
+    public function getCommandExecutionLock() {
+        return $this->commandExecutionLock;
+    }
+
+    /**
+     * @param ICommandExecutionLock $commandExecutionLock
+     */
+    public function setCommandExecutionLock(ICommandExecutionLock $commandExecutionLock) {
+        $this->commandExecutionLock = $commandExecutionLock;
+    }
+
+    /**
      * @param array $args
      *
      * @throws Exception
@@ -362,6 +413,8 @@ class Console implements IConsole {
      */
     protected function runCommand(ICommand $command, $isolate = true) {
         try {
+            $this->commandExecutionLock->lockCommand($this, $command);
+
             if ($isolate) {
                 $input = clone $this->input;
                 $output = clone $this->output;
@@ -452,6 +505,13 @@ class Console implements IConsole {
      */
     protected function createCommandInvoker() {
         return new CommandInvoker();
+    }
+
+    /**
+     * @return ICommandExecutionLock
+     */
+    private function createCommandExecutionLock() {
+        return new CommandExecutionLock();
     }
 
     /**

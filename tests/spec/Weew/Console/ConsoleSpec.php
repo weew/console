@@ -7,9 +7,11 @@ use Prophecy\Argument;
 use stdClass;
 use tests\spec\Weew\Console\Mocks\ErrorCommand;
 use tests\spec\Weew\Console\Mocks\FakeCommand;
+use Weew\Console\CommandExecutionLock;
 use Weew\Console\CommandInvoker;
 use Weew\Console\Console;
 use Weew\Console\Exceptions\InvalidCommandException;
+use Weew\Console\ICommandExecutionLock;
 use Weew\Console\ICommandInvoker;
 use Weew\Console\IInput;
 use Weew\Console\Input;
@@ -52,6 +54,16 @@ class ConsoleSpec extends ObjectBehavior {
         $this->getVersion()->shouldBe('1.0');
         $this->setVersion('version');
         $this->getVersion()->shouldBe('version');
+    }
+
+    function it_takes_and_returns_allow_parallel() {
+        $this->getAllowParallel()->shouldBe(true);
+        $this->setAllowParallel(false);
+        $this->getAllowParallel()->shouldBe(false);
+    }
+
+    function it_is_chainable_trough_set_allow_parallel() {
+        $this->setAllowParallel(true)->shouldBe($this);
     }
 
     function it_is_chainable_trough_set_version() {
@@ -135,6 +147,13 @@ class ConsoleSpec extends ObjectBehavior {
         $this->getCommandInvoker()->shouldHaveType(ICommandInvoker::class);
         $this->setCommandInvoker($commandInvoker);
         $this->getCommandInvoker()->shouldBe($commandInvoker);
+    }
+
+    function it_takes_and_returns_command_execution_lock() {
+        $commandExecutionLock = new CommandExecutionLock();
+        $this->getCommandExecutionLock()->shouldHaveType(ICommandExecutionLock::class);
+        $this->setCommandExecutionLock($commandExecutionLock);
+        $this->getCommandExecutionLock()->shouldBe($commandExecutionLock);
     }
 
     function it_parses_args_as_string() {

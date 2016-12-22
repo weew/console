@@ -19,10 +19,12 @@
         }
     },
     "require": {
-        "weew/console-arguments": "^1.0",
+        "weew/console-arguments": "^1.13",
         "weew/console-formatter": "^2.1",
         "weew/helpers-array": "^1.2",
-        "weew/helpers-string": "^1.7"
+        "weew/helpers-string": "^1.7",
+        "weew/json-encoder": "^1.0",
+        "weew/helpers-filesystem": "^1.2"
     },
     "require-dev": {
         "satooshi/php-coveralls": "^0.6.1",

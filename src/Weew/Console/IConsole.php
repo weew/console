@@ -45,6 +45,18 @@ interface IConsole {
     /**
      * @return bool
      */
+    function getAllowParallel();
+
+    /**
+     * @param bool $allowParallel
+     *
+     * @return IConsole
+     */
+    function setAllowParallel($allowParallel);
+
+    /**
+     * @return bool
+     */
     function getCatchErrors();
 
     /**
@@ -138,4 +150,14 @@ interface IConsole {
      * @param ICommandInvoker $commandInvoker
      */
     function setCommandInvoker(ICommandInvoker $commandInvoker);
+
+    /**
+     * @return ICommandExecutionLock
+     */
+    function getCommandExecutionLock();
+
+    /**
+     * @param ICommandExecutionLock $commandExecutionLock
+     */
+    function setCommandExecutionLock(ICommandExecutionLock $commandExecutionLock);
 }
