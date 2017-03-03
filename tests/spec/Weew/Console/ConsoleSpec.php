@@ -175,7 +175,6 @@ class ConsoleSpec extends ObjectBehavior {
     function it_handles_unknown_commands(ICommandInvoker $invoker) {
         $this->getOutput()->setEnableBuffering(true);
         $this->setCommandInvoker($invoker);
-        $invoker->run()->shouldNotBeCalled();
         $this->parseString('command');
     }
 

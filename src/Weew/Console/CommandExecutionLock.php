@@ -15,6 +15,11 @@ class CommandExecutionLock implements ICommandExecutionLock {
     protected $lockFile;
 
     /**
+     * @var array
+     */
+    protected $recentCommands = [];
+
+    /**
      * CommandExecutionLock constructor.
      *
      * @param string $lockFile
@@ -25,6 +30,7 @@ class CommandExecutionLock implements ICommandExecutionLock {
         }
 
         $this->setLockFile($lockFile);
+        $this->handleShutdowns();
     }
 
     /**
@@ -85,6 +91,9 @@ class CommandExecutionLock implements ICommandExecutionLock {
      * @param string $value
      */
     public function addToLockFile($value) {
+        // use key -> value here for easier lookup
+        $this->recentCommands[$value] = true;
+
         $data = $this->readLockFile();
         $data[$value] = (new DateTime())->format(DateTime::ATOM);
         $this->writeLockFile($data);
@@ -94,9 +103,21 @@ class CommandExecutionLock implements ICommandExecutionLock {
      * @param string $value
      */
     public function removeFromLockFile($value) {
+        unset($this->recentCommands[$value]);
+
         $data = $this->readLockFile();
         array_remove($data, $value);
         $this->writeLockFile($data);
+    }
+
+    /**
+     * Remove all locks for commands called trough
+     * this particular lock instance.
+     */
+    public function removeRecentCommandsFromLockFile() {
+        foreach ($this->recentCommands as $commandName => $status) {
+            $this->removeFromLockFile($commandName);
+        }
     }
 
     /**
@@ -119,17 +140,41 @@ class CommandExecutionLock implements ICommandExecutionLock {
         }
 
         $this->addToLockFile($command->getName());
+    }
+
+    /**
+     * Handle shutdown events and clean up lock files.
+     */
+    protected function handleShutdowns() {
+        declare(ticks = 1);
 
         $self = $this;
-        register_shutdown_function(function() use ($self, $command) {
-            $self->removeFromLockFile($command->getName());
-        }, [$this, $command]);
+
+        $cleanup = function($signal = null) use ($self) {
+            if ($signal === SIGTERM) {
+                fprintf(STDERR, 'Received SIGTERM...');
+            } else if ($signal === SIGINT) {
+                fprintf(STDERR, 'Received SIGINT...');
+            } else if ($signal === SIGTSTP) {
+                fprintf(STDERR, 'Received SIGTSTP...');
+            }
+
+            $self->removeRecentCommandsFromLockFile();
+        };
+
+        if (extension_loaded('pcntl')) {
+            pcntl_signal(SIGTERM, $cleanup, false);
+            pcntl_signal(SIGINT, $cleanup, false);
+            pcntl_signal(SIGTSTP, $cleanup, false);
+        }
+
+        register_shutdown_function($cleanup);
     }
 
     /**
      * @return string
      */
     protected function getDefaultLockFile() {
-        return path(sys_get_temp_dir(), md5(__DIR__) . '_console_lock');
+        return path(sys_get_temp_dir(), md5(__DIR__), '_console_lock');
     }
 }

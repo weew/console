@@ -121,4 +121,19 @@ class CommandExecutionLockSpec extends ObjectBehavior {
         $this->lockCommand($console, $command);
         $this->isInLockFile('name')->shouldBe(false);
     }
+
+    function it_removes_all_recent_commands_from_lock() {
+        $console = new Console();
+        $console->setAllowParallel(false);
+        $this->lockCommand($console, new Command('name1'));
+        $this->lockCommand($console, new Command('name2'));
+
+        $this->isInLockFile('name1')->shouldBe(true);
+        $this->isInLockFile('name2')->shouldBe(true);
+
+        $this->removeRecentCommandsFromLockFile();
+
+        $this->isInLockFile('name1')->shouldBe(false);
+        $this->isInLockFile('name2')->shouldBe(false);
+    }
 }
