@@ -160,6 +160,7 @@ class CommandExecutionLock implements ICommandExecutionLock {
             }
 
             $self->removeRecentCommandsFromLockFile();
+            exit;
         };
 
         if (extension_loaded('pcntl')) {
