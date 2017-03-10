@@ -413,7 +413,7 @@ class Console implements IConsole {
      */
     protected function runCommand(ICommand $command, $isolate = true) {
         try {
-            $this->commandExecutionLock->lockCommand($this, $command);
+            $this->commandExecutionLock->lockCommand($command, $this->getAllowParallel());
 
             if ($isolate) {
                 $input = clone $this->input;
