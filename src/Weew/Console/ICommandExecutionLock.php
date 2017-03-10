@@ -6,45 +6,20 @@ use Weew\ConsoleArguments\ICommand;
 
 interface ICommandExecutionLock {
     /**
+     * @param ICommand $command
+     * @param bool $allowParallelism
+     *
      * @return string
      */
-    function getLockFile();
+    function lockCommand(ICommand $command, $allowParallelism = true);
 
     /**
-     * @param string $lockFile
-     */
-    function setLockFile($lockFile);
-
-    /**
-     * @return array
-     */
-    function readLockFile();
-
-    /**
-     * @param array $data
-     */
-    function writeLockFile(array $data);
-
-    /**
-     * @param string $value
-     *
-     * @return bool
-     */
-    function isInLockFile($value);
-
-    /**
-     * @param string $value
-     */
-    function addToLockFile($value);
-
-    /**
-     * @param string $value
-     */
-    function removeFromLockFile($value);
-
-    /**
-     * @param IConsole $console
      * @param ICommand $command
      */
-    function lockCommand(IConsole $console, ICommand $command);
+    function unlockCommand(ICommand $command);
+
+    /**
+     * Delete all locks created by this particular instance.
+     */
+    function unlockAllCommands();
 }
